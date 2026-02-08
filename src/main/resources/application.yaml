@@ -1,0 +1,86 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: prices-api
+  threads:
+    virtual:
+      enabled: true
+  # Database Configuration
+  datasource:
+    url: ${DB_URL:jdbc:h2:mem:pricesdb;MODE=PostgreSQL}
+    driverClassName: org.h2.Driver
+    username: ${DB_USER:sa}
+    password: ${DB_USER_PASS:}
+  h2:
+    console:
+      enabled: true
+  jpa:
+    defer-datasource-initialization: true
+  sql:
+    init:
+      mode: always
+  # Redis Configuration
+  data:
+    redis:
+      host: ${SPRING_REDIS_HOST:localhost}
+      port: ${SPRING_REDIS_PORT:6379}
+  cache:
+    type: redis
+  kafka:
+    bootstrap-servers: ${KAFKA_SERVER:localhost:9092}
+    consumer:
+      group-id: price-service-group
+      auto-offset-reset: earliest
+# Topic Configuration
+kafka:
+  topic-name: ${KAFKA_TOPIC:prices-topic}
+
+# Cache TTL Configuration
+cache:
+  cache-ttl: ${CACHE_TTL:30m}
+
+logging:
+  level:
+    root: INFO
+    com.inditex.prices: INFO
+    org.apache.kafka: ERROR
+    kafka: ERROR
+    state.change.logger: ERROR
+
+# OpenAPI / Swagger configuration
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: alpha
+
+# Resilience4j Configuration
+resilience4j:
+  circuitbreaker:
+    instances:
+      pricesSearch:
+        ignore-exceptions:
+          - com.inditex.prices.domain.exception.NotFoundException
+        sliding-window-type: COUNT_BASED
+        sliding-window-size: 50
+        minimum-number-of-calls: 10
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 10s
+
+# Observability & Monitoring
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
+  metrics:
+    enable:
+      all: true
+    tags:
+      application: ${spring.application.name}
+  health:
+    redis:
+      enabled: false
