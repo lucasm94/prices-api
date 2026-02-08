@@ -69,7 +69,7 @@ The API standardizes responses via a global exception handler:
 
 ### Monitoring with Grafana
 Grafana is exposed on port 3080 (to avoid conflicts if you already have Grafana running).
-- Dashboard URL: http://localhost:3080/d/price-detail-metrics-v1
+- Dashboard URL: http://localhost:3080/d/inditex/prices-api-dashboard
 ![grafana-dash.png](assets/grafana-dash.png)
 
 ### Test Coverage
