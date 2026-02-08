@@ -73,5 +73,4 @@ Grafana is exposed on port 3080 (to avoid conflicts if you already have Grafana 
 ![grafana-dash.png](assets/grafana-dash.png)
 
 ### Test Coverage
-Current coverage results:Coverage
 ![coverage.png](assets/coverage.png)
